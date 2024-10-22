@@ -134,3 +134,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+correspondences/
+models/
+correspondences.zip
+models.zip
