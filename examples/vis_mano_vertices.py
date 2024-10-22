@@ -20,7 +20,10 @@ import pickle
 
 import numpy as np
 import torch
-import open3d as o3d
+
+# import open3d as o3d
+import pyrender
+import trimesh
 
 import smplx
 
@@ -54,6 +57,18 @@ def main(
     print("Vertices shape =", vertices.shape)
     print("Joints shape =", joints.shape)
 
+    vertex_colors = np.ones([vertices.shape[0], 4]) * [0.3, 0.3, 0.3, 0.8]
+    tri_mesh = trimesh.Trimesh(vertices, model.faces, vertex_colors=vertex_colors)
+
+    mesh = pyrender.Mesh.from_trimesh(tri_mesh)
+
+    scene = pyrender.Scene()
+    scene.add(mesh)
+
+    pyrender.Viewer(scene, use_raymond_lighting=True)
+
+    return
+
     mesh = o3d.geometry.TriangleMesh()
     mesh.vertices = o3d.utility.Vector3dVector(vertices)
     mesh.triangles = o3d.utility.Vector3iVector(model.faces)
@@ -64,8 +79,7 @@ def main(
 
     mesh.vertex_colors = o3d.utility.Vector3dVector(colors)
 
-    # o3d.visualization.draw_geometries([mesh])
-    o3d.visualization.draw(mesh)
+    o3d.visualization.draw_geometries([mesh])
 
 
 if __name__ == "__main__":
